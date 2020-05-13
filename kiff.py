@@ -1,6 +1,14 @@
 #!/usr/bin/env python2
 '''
 Kiff, the Kicad Diff!
+
+Graphically compares layout changes between the current version (B) and a
+specific git commit-id, given as a parameter (A).
+
+Elements which have been removed from A are shown
+in red, elements which have been added to A are green.
+
+Make sure you have no un-commited changes before using this script.
 '''
 # Sorry, pcbnew works for me only with python2 :(
 import argparse
@@ -15,7 +23,11 @@ from plot_layers import plot_layers
 
 
 def img_diff(i1, i2, doInvert=True):
-    ''' doInvert: set true whe input is black on white background '''
+    '''
+    i1, i2: PIL Image objects of same size to compare
+    doInvert: set true when input is black on white background
+    returns: PIL Image of the diff
+    '''
     a0 = array(i1)
     a1 = array(i2)
     if doInvert:
@@ -23,7 +35,7 @@ def img_diff(i1, i2, doInvert=True):
         a1 = ~a1
     a_out = zeros((a0.shape[0], a0.shape[1], 3), dtype=uint8)
 
-    # Black background (looks nicer!)
+    # Black background, unchanged = grey (looks nicer!)
     common = a0 & a1
     diff1 = a1 & ~common
     diff2 = a0 & ~common
@@ -32,7 +44,7 @@ def img_diff(i1, i2, doInvert=True):
     a_out[:, :, 1] = common * 0.2 + diff2 * 0.8
     a_out[:, :, 2] = common * 0.2
 
-    # White background (simpler!)
+    # White background, unchanged = black (simpler!)
     # a_out[:, :, 0] = a0
     # a_out[:, :, 1] = a1
     # a_out[:, :, 2] = a0 & a1
@@ -48,8 +60,10 @@ def load_svg(fName):
 
 def load_pdf(fName, x=4.7, y=2.6, W=7.3, H=6.0, r=600):
     '''
+    fName: .pdf file to load
     x, y, W, H: crop window [inch]
     r: resolution [dpi]
+    returns: PIL Image
     '''
     ppm_str = subprocess.check_output([
         'pdftoppm',
@@ -77,13 +91,19 @@ def main():
     parser.add_argument(
         '-c', '--commit',
         default='HEAD~1',
-        help='git commit-id to compare current version against'
+        help='git commit-id to compare current version against. Default is HEAD - 1'
     )
     parser.add_argument(
         '-l', '--layers',
         default=0,
         type=int,
         help='Number of inner layers (InX.Cu) to plot'
+    )
+    parser.add_argument(
+        '-r', '--resolution',
+        default=400,
+        type=int,
+        help='Plotting resolution in [dpi]'
     )
     args = parser.parse_args()
 
@@ -94,13 +114,13 @@ def main():
     # Do a plot of the current version
     # output directory name is derived from `git describe`
     dir1 = 'plot_' + desc()
-    print('Plot into ' + dir1)
+    print('Writing pdfs into ' + dir1)
     bounds1 = plot_layers(args.kicad_pcb, dir1, layers)
 
     # Checkout older version and plot it
     system('git checkout {}'.format(args.commit))
     dir2 = 'plot_' + desc()
-    print('Plot into ' + dir2)
+    print('Writing pdfs into ' + dir2)
     bounds2 = plot_layers(args.kicad_pcb, dir2, layers)
 
     # Switch back to current version
@@ -109,7 +129,7 @@ def main():
     try:
         mkdir('diffs')
     except OSError:
-        pass
+        print('diffs directory already exists')
 
     # Create a .png diff for each layer
     for ll in layers:
@@ -119,11 +139,12 @@ def main():
         out_file = 'diffs/' + ll + '.png'
         print(out_file)
 
-        i1 = load_pdf(join(dir1, pdf_name), r=400, **bounds1)
-        i2 = load_pdf(join(dir2, pdf_name), r=400, **bounds1)
+        i1 = load_pdf(join(dir1, pdf_name), r=args.resolution, **bounds1)
+        i2 = load_pdf(join(dir2, pdf_name), r=args.resolution, **bounds1)
         i_out = img_diff(i1, i2)
         i_out.save(out_file)
 
+    print('Removing temporary directories')
     rmtree(dir1)
     rmtree(dir2)
 
