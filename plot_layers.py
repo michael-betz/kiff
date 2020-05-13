@@ -1,14 +1,19 @@
 #!/usr/bin/env python2
-
 '''
 Plot a selection of layers of a kicad pcb as .pdf files
 '''
-
 import sys
 import pcbnew
 
 
 def plot_layers(f_name, plot_dir, layers=['F.Cu', 'B.Cu'], zone_refill=True):
+    '''
+    f_name: the .kicad_pcb file to plot
+    plot_dir: output directory for the .pdf files
+    layers: list of layer names to plot
+    zone_refill: if True, re-calculate copper fills before plotting
+    returns: dict with coordinates of bounding box containing the PCB [inches]
+    '''
     board = pcbnew.LoadBoard(f_name)
 
     if zone_refill:
@@ -37,7 +42,8 @@ def plot_layers(f_name, plot_dir, layers=['F.Cu', 'B.Cu'], zone_refill=True):
     popt.SetMirror(False)
     # popt.SetUseGerberAttributes(True)
     popt.SetExcludeEdgeLayer(False)
-    # popt.SetUseAuxOrigin(True)pctl.SetColorMode(False)
+    # popt.SetUseAuxOrigin(True)
+    popt.SetDrillMarksType(popt.FULL_DRILL_SHAPE)
 
     for layer in layers:
         pctl.SetLayer(board.GetLayerID(layer))
