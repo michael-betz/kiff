@@ -10,8 +10,8 @@ Make sure you have no un-commited changes before using this script.
 ![diff example](example.png)
 
 # Requires
-  * `pdftoppm` to convert the Kicad plots to bitmaps (`apt install poppler-utils`)
-  * `numpy` for image manipulations
+  * `poppler-utils` to convert the Kicad .pdf plots to bitmaps
+  * `python-pil` and `python-numpy` for image manipulations
   * `kiff.py` needs to be in your path
 
 # Usage
@@ -22,5 +22,7 @@ $ cd <kicad_project>
 $ kiff.py my_pcb.kicad_pcb -c HEAD~3
 ```
 
-Will plot each layer of each version as `.pdf` into 2 temporary directories.
-Then uses `pdftoppm` to crop the pdfs and convert them to bitmap. Bitmap data is read by `PIL` over stdin and the diff image is created in python using numpy arrays.
+This will generate `diffs/<layer_name>.png` for each layer.
+
+It works by using `plot_layers.py` to make Kicad plot each layer of each version as `.pdf` into 2 temporary directories.
+Then `pdftoppm` is called to crop the pdfs and convert them to bitmap. Bitmap data is read by `PIL` over stdin and the diff image is created in python using numpy arrays.

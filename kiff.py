@@ -1,4 +1,5 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
+# tested on python2 & python3
 '''
 Kiff, the Kicad Diff!
 
@@ -10,7 +11,6 @@ in red, elements which have been added to A are green.
 
 Make sure you have no un-commited changes before using this script.
 '''
-# Sorry, pcbnew works for me only with python2 :(
 import argparse
 from PIL import Image
 from numpy import array, zeros, uint8
@@ -52,12 +52,6 @@ def img_diff(i1, i2, doInvert=True):
     return Image.fromarray(a_out)
 
 
-def load_svg(fName):
-    ''' not used '''
-    png_str = subprocess.check_output(['rsvg-convert', '-b', 'white', fName])
-    return Image.open(BytesIO(png_str)).convert('L')
-
-
 def load_pdf(fName, x=4.7, y=2.6, W=7.3, H=6.0, r=600):
     '''
     fName: .pdf file to load
@@ -79,7 +73,8 @@ def load_pdf(fName, x=4.7, y=2.6, W=7.3, H=6.0, r=600):
 
 def desc():
     ''' the git describe string '''
-    return subprocess.check_output(['git', 'describe']).strip()
+    tmp = subprocess.check_output(['git', 'describe'])
+    return tmp.decode('ascii').strip()
 
 
 def main():
