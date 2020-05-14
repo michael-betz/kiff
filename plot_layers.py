@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 '''
 Plot a selection of layers of a kicad pcb as .pdf files
 '''
