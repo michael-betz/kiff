@@ -14,10 +14,10 @@ Make sure you have no un-commited changes before using this script.
 import argparse
 from PIL import Image
 from numpy import array, zeros, uint8
-import subprocess
+from subprocess import call, check_output
 from io import BytesIO
 from os.path import splitext, join
-from os import mkdir, system
+from os import mkdir
 from shutil import rmtree
 from plot_layers import plot_layers
 
@@ -59,7 +59,7 @@ def load_pdf(fName, x=4.7, y=2.6, W=7.3, H=6.0, r=600):
     r: resolution [dpi]
     returns: PIL Image
     '''
-    ppm_str = subprocess.check_output([
+    ppm_str = check_output([
         'pdftoppm',
         '-r', str(int(r)),
         '-x', str(int(x * r)),
@@ -73,7 +73,7 @@ def load_pdf(fName, x=4.7, y=2.6, W=7.3, H=6.0, r=600):
 
 def desc():
     ''' the git describe string '''
-    tmp = subprocess.check_output(['git', 'describe'])
+    tmp = check_output(['git', 'describe', '--dirty'])
     return tmp.decode('ascii').strip()
 
 
@@ -85,20 +85,20 @@ def main():
     )
     parser.add_argument(
         '-c', '--commit',
-        default='HEAD~1',
-        help='git commit-id to compare current version against. Default is HEAD - 1'
+        default='HEAD',
+        help='git commit-id to compare current version against. Default: HEAD'
     )
     parser.add_argument(
         '-l', '--layers',
         default=0,
         type=int,
-        help='Number of inner layers (InX.Cu) to plot'
+        help='Number of inner layers (InX.Cu) to plot. Default: 0'
     )
     parser.add_argument(
         '-r', '--resolution',
         default=400,
         type=int,
-        help='Plotting resolution in [dpi]'
+        help='Plotting resolution in [dpi]. Default: 400'
     )
     args = parser.parse_args()
 
@@ -106,21 +106,44 @@ def main():
     layers += ['In{}.Cu'.format(i + 1) for i in range(args.layers)]
     print(layers)
 
-    # Do a plot of the current version
+    # Check for local (un-commited) changes
+    do_stash = call(['git', 'diff-index', '--quiet', 'HEAD', '--']) > 0
+    if not do_stash and args.commit == 'HEAD':
+        print('Nothing to compare. Try -c <commit-id>')
+        return -1
+
+    # Do a .pdf plot of the current version
     # output directory name is derived from `git describe`
     dir1 = 'plot_' + desc()
-    print('Writing pdfs into ' + dir1)
+    print('> ' + dir1)
     bounds1 = plot_layers(args.kicad_pcb, dir1, layers)
 
-    # Checkout older version and plot it
-    system('git checkout {}'.format(args.commit))
+    # Stash local changes if needed
+    if do_stash:
+        print('$ git stash')
+        check_output(['git', 'stash'])
+
+    # checkout specified git version (default: HEAD) ...
+    if args.commit != 'HEAD':
+        print('$ git checkout ' + args.commit)
+        check_output(['git', 'checkout', args.commit])
+
+    # ... and do a .pdf plot of it
     dir2 = 'plot_' + desc()
-    print('Writing pdfs into ' + dir2)
+    print('> ' + dir2)
     bounds2 = plot_layers(args.kicad_pcb, dir2, layers)
 
     # Switch back to current version
-    system('git checkout -')
+    if args.commit != 'HEAD':
+        print('$ git checkout -')
+        check_output(['git', 'checkout', '-'])
 
+    # Restore local changes
+    if do_stash:
+        print('$ git stash pop')
+        check_output(['git', 'stash', 'pop'])
+
+    # Generate plots into `diffs` directory
     try:
         mkdir('diffs')
     except OSError:

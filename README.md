@@ -14,8 +14,14 @@ Make sure you have no un-commited changes before using this script.
   * `python-pil` and `python-numpy` for image manipulations
   * `kiff.py` needs to be in your path
 
+Tested to work with python2 and 3. To enable scripting with python3 Kicad needs to be compiled with `-DKICAD_SCRIPTING_PYTHON3=TRUE`.
+
 # Usage
-Compare the current version against the one from 3 commits ago:
+If `-c` is not given, compares the local working copy against the latest version from git. This is useful to verify board changes before committing them.
+
+If a git commit-id is given for `-c`, will compare the local version against this commit. This is useful to compare changes between 2 commits. A useful shortcut for the commit-id is `HEAD~1`, which means the previous commit.
+
+For example, compare the current version against the one from 3 commits ago:
 
 ```bash
 $ cd <kicad_project>
