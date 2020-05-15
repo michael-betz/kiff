@@ -85,7 +85,10 @@ def desc():
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    from argparse import RawTextHelpFormatter
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=RawTextHelpFormatter
+    )
     parser.add_argument(
         'kicad_pcb',
         help='the `.kicad_pcb` file to DIFF'
