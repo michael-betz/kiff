@@ -91,9 +91,8 @@ def co(cmds):
 
 
 def main():
-    from argparse import RawTextHelpFormatter
     parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=RawTextHelpFormatter
+        description=__doc__, formatter_class=argparse.RawTextHelpFormatter
     )
     parser.add_argument(
         'kicad_pcb',
