@@ -1,15 +1,22 @@
 #!/usr/bin/env python
-# tested on python2 & python3
+# tested on Python 2 & Python 3
 '''
 Kiff, the Kicad Diff!
 
-Graphically compares layout changes between the current version (B) and a
-specific git commit-id, given as a parameter (A).
+Graphically compare layout changes between two git versions of a PCB.
 
-Elements which have been removed from A are shown
-in red, elements which have been added to A are green.
+If `-c` is not given, compares the local working copy against the latest
+commited version from git. This is useful to verify board changes before
+committing them.
 
-Make sure you have no un-commited changes before using this script.
+If a git commit-id is given in `-c`, will compare the local version
+against this commit. This is useful to compare changes between 2 commits.
+
+A useful shortcut for the commit-id is `HEAD~1`, which means the previous one.
+
+Elements which have been added in the local version are colored green,
+removed ones red.
+Note that this may look inverted for features on copper fills.
 '''
 import argparse
 from PIL import Image
