@@ -165,7 +165,7 @@ def main():
         pdf_name += '-' + ll.replace('.', '_') + '.pdf'
 
         out_file = 'diffs/' + ll + '.png'
-        print(out_file)
+        print('> ' + out_file)
 
         i1 = load_pdf(join(dir1, pdf_name), r=args.resolution, **bounds1)
         i2 = load_pdf(join(dir2, pdf_name), r=args.resolution, **bounds1)
