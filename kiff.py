@@ -114,7 +114,7 @@ def main():
 
     layers = ['F.Cu', 'B.Cu', 'F.SilkS', 'B.SilkS']
     layers += ['In{}.Cu'.format(i + 1) for i in range(args.layers)]
-    print(layers)
+    print('layers: ' + ' '.join(layers))
 
     # Check for local (un-commited) changes
     do_stash = call(['git', 'diff-index', '--quiet', 'HEAD', '--']) > 0
