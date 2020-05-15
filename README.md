@@ -2,7 +2,7 @@
 Graphically compare layout changes between two git versions of a PCB.
 
 If `-c` is not given, compares the local working copy against the latest
-commited version from git. This is useful to verify board changes before
+version on git. This is useful to verify board changes before
 committing them.
 
 If a git commit-id is given in `-c`, will compare the local version
