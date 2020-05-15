@@ -84,6 +84,12 @@ def desc():
     return tmp.decode('ascii').strip()
 
 
+def co(cmds):
+    ''' run and print cmds, raises exception if command returns != 0 '''
+    print('$ ' + ' '.join(cmds))
+    check_output(cmds)
+
+
 def main():
     from argparse import RawTextHelpFormatter
     parser = argparse.ArgumentParser(
@@ -130,13 +136,11 @@ def main():
 
     # Stash local changes if needed
     if do_stash:
-        print('$ git stash')
-        check_output(['git', 'stash'])
+        co(['git', 'stash'])
 
     # checkout specified git version (default: HEAD) ...
     if args.commit != 'HEAD':
-        print('$ git checkout ' + args.commit)
-        check_output(['git', 'checkout', args.commit])
+        co(['git', 'checkout', args.commit])
 
     # ... and do a .pdf plot of it
     dir2 = 'plot_' + desc()
@@ -145,13 +149,11 @@ def main():
 
     # Switch back to current version
     if args.commit != 'HEAD':
-        print('$ git checkout -')
-        check_output(['git', 'checkout', '-'])
+        co(['git', 'checkout', '-'])
 
     # Restore local changes
     if do_stash:
-        print('$ git stash pop')
-        check_output(['git', 'stash', 'pop'])
+        co(['git', 'stash', 'pop'])
 
     # Generate plots into `diffs` directory
     try:
