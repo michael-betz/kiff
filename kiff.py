@@ -119,7 +119,7 @@ def main():
     # Check for local (un-commited) changes
     do_stash = call(['git', 'diff-index', '--quiet', 'HEAD', '--']) > 0
     if not do_stash and args.commit == 'HEAD':
-        print('Nothing to compare. Try -c <commit-id>')
+        print('No local changes, nothing to compare. Try -c <commit-id>')
         return -1
 
     # Do a .pdf plot of the current version
