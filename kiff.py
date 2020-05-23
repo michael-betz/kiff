@@ -127,11 +127,20 @@ def main():
         print('No local changes, nothing to compare. Try -c <commit-id>')
         return -1
 
-    # Do a .pdf plot of the current version
     # output directory name is derived from `git describe`
-    dir1 = 'plot_' + desc()
+    try:
+        git1_name = desc()
+    except Exception:
+        # this will happen if user isn't in a git repo
+        print("No git description, can't continue")
+        exit(1)
+
+    # Do a .pdf plot of the current version
+    dir1 = 'plot_' + git1_name
     print('> ' + dir1)
     bounds1 = plot_layers(args.kicad_pcb, dir1, layers)
+    if bounds1 is None:
+        exit(1)
 
     # Stash local changes if needed
     if do_stash:
@@ -145,6 +154,8 @@ def main():
     dir2 = 'plot_' + desc()
     print('> ' + dir2)
     bounds2 = plot_layers(args.kicad_pcb, dir2, layers)
+    if bounds2 is None:
+        exit(1)
 
     # Switch back to current version
     if args.commit != 'HEAD':

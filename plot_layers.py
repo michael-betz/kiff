@@ -4,6 +4,7 @@ Plot a selection of layers of a kicad pcb as .pdf files
 '''
 import sys
 import pcbnew
+import os
 
 
 def plot_layers(f_name, plot_dir, layers=['F.Cu', 'B.Cu'], zone_refill=True):
@@ -14,7 +15,15 @@ def plot_layers(f_name, plot_dir, layers=['F.Cu', 'B.Cu'], zone_refill=True):
     zone_refill: if True, re-calculate copper fills before plotting
     returns: dict with coordinates of bounding box containing the PCB [inches]
     '''
-    board = pcbnew.LoadBoard(f_name)
+    if not os.path.isfile(f_name) or not os.access(f_name, os.R_OK):
+        print("%s: not readable, aborting" % f_name)
+        return None
+    try:
+        board = pcbnew.LoadBoard(f_name)
+    except Exception:
+        print("%s: failed to load with pcbnew, aborting" % f_name)
+        return None
+    # after this point, chances of failure are low
 
     if zone_refill:
         print('filling zones ...')
