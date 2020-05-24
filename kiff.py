@@ -53,7 +53,7 @@ def img_diff(i1, i2, doInvert=True):
     a_out[:, :, 2] = common * 0.2                # Blue
 
     # how many pixels changed in the whole image: 1.0 = all pixels changed
-    added = float(sum(diff1)) / sum(a0)  # python2 loves integers too much!
+    added = float(sum(diff1)) / sum(a1)  # python2 loves integers too much!
     removed = float(sum(diff2)) / sum(a0)
 
     return Image.fromarray(a_out), added, removed
