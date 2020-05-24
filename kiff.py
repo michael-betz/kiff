@@ -20,7 +20,7 @@ Note that this may look inverted for features on copper fills.
 '''
 import argparse
 from PIL import Image
-from numpy import array, zeros, uint8
+from numpy import array, zeros, uint8, sum
 from subprocess import call, check_output
 from io import BytesIO
 from os.path import splitext, join
@@ -42,21 +42,21 @@ def img_diff(i1, i2, doInvert=True):
         a1 = ~a1
     a_out = zeros((a0.shape[0], a0.shape[1], 3), dtype=uint8)
 
-    # Black background, unchanged = grey (looks nicer!)
+    # bit-wise logic applied to all uint8 pixel values
     common = a0 & a1
     diff1 = a1 & ~common
     diff2 = a0 & ~common
 
-    a_out[:, :, 0] = common * 0.2 + diff1 * 0.8
-    a_out[:, :, 1] = common * 0.2 + diff2 * 0.8
-    a_out[:, :, 2] = common * 0.2
+    # assign results to color channels
+    a_out[:, :, 0] = common * 0.2 + diff1 * 0.8  # Red
+    a_out[:, :, 1] = common * 0.2 + diff2 * 0.8  # Green
+    a_out[:, :, 2] = common * 0.2                # Blue
 
-    # White background, unchanged = black (simpler!)
-    # a_out[:, :, 0] = a0
-    # a_out[:, :, 1] = a1
-    # a_out[:, :, 2] = a0 & a1
+    # how many pixels changed in the whole image: 1.0 = all pixels changed
+    added = float(sum(diff1)) / sum(a0)  # python2 loves integers too much!
+    removed = float(sum(diff2)) / sum(a0)
 
-    return Image.fromarray(a_out)
+    return Image.fromarray(a_out), added, removed
 
 
 def load_pdf(fName, x=4.7, y=2.6, W=7.3, H=6.0, r=600):
@@ -115,6 +115,11 @@ def main():
         type=int,
         help='Plotting resolution in [dpi]. Default: 400'
     )
+    parser.add_argument(
+        '-k', '--keep',
+        action='store_true',
+        help='Don`t delete temporary .pdf layer plots'
+    )
     args = parser.parse_args()
 
     layers = ['F.Cu', 'B.Cu', 'F.SilkS', 'B.SilkS']
@@ -172,21 +177,27 @@ def main():
         print('diffs directory already exists')
 
     # Create a .png diff for each layer
+    diff_cntr = 0
     for ll in layers:
         pdf_name = splitext(args.kicad_pcb)[0]
         pdf_name += '-' + ll.replace('.', '_') + '.pdf'
-
         out_file = 'diffs/' + ll + '.png'
-        print('> ' + out_file)
 
         i1 = load_pdf(join(dir1, pdf_name), r=args.resolution, **bounds1)
         i2 = load_pdf(join(dir2, pdf_name), r=args.resolution, **bounds1)
-        i_out = img_diff(i1, i2)
+        i_out, added, removed = img_diff(i1, i2)
         i_out.save(out_file)
 
-    print('Removing temporary directories')
-    rmtree(dir1)
-    rmtree(dir2)
+        print('> {:18s} (+{:.6f}, -{:.6f})'.format(out_file, added, removed))
+        diff_cntr += added + removed
+
+    if diff_cntr == 0:
+        print("No visual changes detected")
+
+    if not args.keep:
+        print('Removing temporary directories')
+        rmtree(dir1)
+        rmtree(dir2)
 
 
 if __name__ == '__main__':
