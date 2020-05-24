@@ -80,7 +80,7 @@ def load_pdf(fName, x=4.7, y=2.6, W=7.3, H=6.0, r=600):
 
 def desc():
     ''' the git describe string '''
-    tmp = check_output(['git', 'describe', '--dirty'])
+    tmp = check_output(['git', 'describe', '--dirty', '--always'])
     return tmp.decode('ascii').strip()
 
 
