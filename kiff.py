@@ -111,6 +111,12 @@ def main():
         help='Number of inner layers (InX.Cu) to plot. Default: 0'
     )
     parser.add_argument(
+        '-ll', '--layer-list',
+        default='F.Cu B.Cu F.SilkS B.SilkS',
+        type=str,
+        help='Space separated list of layer names to plot. Default: F.Cu B.Cu F.SilkS B.SilkS'
+    )
+    parser.add_argument(
         '-r', '--resolution',
         default=400,
         type=int,
@@ -123,7 +129,7 @@ def main():
     )
     args = parser.parse_args()
 
-    layers = ['F.Cu', 'B.Cu', 'F.SilkS', 'B.SilkS']
+    layers = args.layer_list.split()
     layers += ['In{}.Cu'.format(i + 1) for i in range(args.layers)]
     print('layers: ' + ' '.join(layers))
 
