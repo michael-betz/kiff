@@ -21,6 +21,9 @@ Note that this may look inverted for features on copper fills.
 
 Tested to work with Python 2 and 3. To enable scripting with Python 3, Kicad needs to be compiled with `-DKICAD_SCRIPTING_PYTHON3=TRUE`.
 
+### Kicad 6
+Tested on 2022-02-15 to work out of the box with Kicad 6.0.2.
+
 # Usage example
 Compare the current version against the one from 3 commits ago:
 
