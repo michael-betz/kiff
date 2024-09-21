@@ -48,20 +48,19 @@ def plot_layers(f_name, plot_dir, layers=['F.Cu', 'B.Cu'], zone_refill=True):
     # print('bounds [inch]:', bounds)
 
     pctl = pcbnew.PLOT_CONTROLLER(board)
-    # pctl.SetColorMode(True)
 
     popt = pctl.GetPlotOptions()
     popt.SetOutputDirectory(plot_dir)
     popt.SetPlotFrameRef(False)
-    # popt.SetLineWidth(pcbnew.FromMM(0.15))
-    # popt.SetAutoScale(False)
     popt.SetScale(1)
     popt.SetMirror(False)
-    # popt.SetUseGerberAttributes(True)
+    popt.SetUseAuxOrigin(True)
+
     if version <= 6:
         popt.SetExcludeEdgeLayer(False)
-    # popt.SetUseAuxOrigin(True)
-    # popt.SetDrillMarksType(popt.FULL_DRILL_SHAPE)
+        popt.SetDrillMarksType(popt.FULL_DRILL_SHAPE)
+    else:
+        popt.SetDrillMarksType(pcbnew.DRILL_MARKS_FULL_DRILL_SHAPE)
 
     for layer in layers:
         pctl.OpenPlotfile(layer, pcbnew.PLOT_FORMAT_PDF, layer)
