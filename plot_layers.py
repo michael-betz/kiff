@@ -54,7 +54,7 @@ def plot_layers(f_name, plot_dir, layers=['F.Cu', 'B.Cu'], zone_refill=True):
     popt.SetPlotFrameRef(False)
     popt.SetScale(1)
     popt.SetMirror(False)
-    popt.SetUseAuxOrigin(True)
+    popt.SetUseAuxOrigin(False)
 
     if version <= 6:
         popt.SetExcludeEdgeLayer(False)
