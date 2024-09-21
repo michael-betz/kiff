@@ -29,3 +29,9 @@ jobs:
       run: |
           ls -la
           python3 ../kiff.py -c "HEAD~1" fmc_lpc_template.kicad_pcb
+
+    - name: archive_results
+      uses: actions/upload-artifact@v4
+      with:
+        name: diff
+        path: test/diff/
