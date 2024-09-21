@@ -50,9 +50,9 @@ def plot_layers(f_name, plot_dir, layers=['F.Cu', 'B.Cu'], zone_refill=True):
     popt.SetScale(1)
     popt.SetMirror(False)
     # popt.SetUseGerberAttributes(True)
-    popt.SetExcludeEdgeLayer(False)
+    # popt.SetExcludeEdgeLayer(False)
     # popt.SetUseAuxOrigin(True)
-    popt.SetDrillMarksType(popt.FULL_DRILL_SHAPE)
+    # popt.SetDrillMarksType(popt.FULL_DRILL_SHAPE)
 
     for layer in layers:
         pctl.SetLayer(board.GetLayerID(layer))
