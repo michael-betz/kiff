@@ -26,8 +26,8 @@ jobs:
 
     - name: setup
       run: |
-        apt update
-        apt install poppler-utils
+        apt update -y
+        apt install -y poppler-utils
         unzip test.zip
         cd test
 
