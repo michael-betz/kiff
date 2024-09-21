@@ -9,7 +9,7 @@ on:
 jobs:
   kicad-test-job:
     runs-on: ubuntu-latest
-    container: 
+    container:
       image: kicad/kicad:7.0.10
       options: --user root
 
@@ -28,4 +28,4 @@ jobs:
       working-directory: ./test
       run: |
           ls -la
-          python3 ../kiff.py -c HEAD~1 fmc_lpc_template.kicad_pcb
+          python3 ../kiff.py -c "HEAD~1" fmc_lpc_template.kicad_pcb
