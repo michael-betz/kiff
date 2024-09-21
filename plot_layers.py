@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 '''
 Plot a selection of layers of a kicad pcb as .pdf files
+
+As of Kicad 8, almost the whole functionality of this script is integrated in
+kicad-cli.
 '''
 import sys
 import pcbnew
@@ -15,6 +18,11 @@ def plot_layers(f_name, plot_dir, layers=['F.Cu', 'B.Cu'], zone_refill=True):
     zone_refill: if True, re-calculate copper fills before plotting
     returns: dict with coordinates of bounding box containing the PCB [inches]
     '''
+    try:
+        version = int(pcbnew.Version().split(".")[0])
+    except AttributeError:
+        version = 5
+
     if not os.path.isfile(f_name) or not os.access(f_name, os.R_OK):
         print("%s: not readable, aborting" % f_name)
         return None
@@ -50,14 +58,25 @@ def plot_layers(f_name, plot_dir, layers=['F.Cu', 'B.Cu'], zone_refill=True):
     popt.SetScale(1)
     popt.SetMirror(False)
     # popt.SetUseGerberAttributes(True)
-    # popt.SetExcludeEdgeLayer(False)
+    if version <= 6:
+        popt.SetExcludeEdgeLayer(False)
     # popt.SetUseAuxOrigin(True)
     # popt.SetDrillMarksType(popt.FULL_DRILL_SHAPE)
 
     for layer in layers:
-        pctl.SetLayer(board.GetLayerID(layer))
         pctl.OpenPlotfile(layer, pcbnew.PLOT_FORMAT_PDF, layer)
-        pctl.PlotLayer()
+
+        if version <= 6:
+            pctl.SetLayer(board.GetLayerID(layer))
+            pctl.PlotLayer()
+        else:
+            # Workaround to get the functionality of SetExcludeEdgeLayer(False)
+            # https://gitlab.com/kicad/code/kicad/-/issues/13841
+            seq = pcbnew.LSEQ()
+            seq.push_back(pcbnew.Edge_Cuts)
+            seq.push_back(board.GetLayerID(layer))
+            pctl.PlotLayers(seq)
+
         pctl.ClosePlot()
 
     return bounds
