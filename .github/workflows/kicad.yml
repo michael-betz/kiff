@@ -1,5 +1,11 @@
 name: Kicad CI
 
+on:
+  push:
+    branches: [ "ci" ]
+  pull_request:
+    branches: [ "ci" ]
+
 jobs:
   kicad-test-job:
     runs-on: ubuntu-latest
@@ -10,7 +16,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: investigate
-        run: |
+      run: |
           pwd
           whoami
           ls -la
