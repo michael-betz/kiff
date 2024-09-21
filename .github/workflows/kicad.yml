@@ -7,7 +7,7 @@ on:
     branches: [ "ci" ]
 
 jobs:
-  kicad-test-job:
+  kicad7-test:
     runs-on: ubuntu-latest
     container:
       image: kicad/kicad:7.0.10
@@ -33,5 +33,34 @@ jobs:
     - name: archive_results
       uses: actions/upload-artifact@v4
       with:
-        name: diff
+        name: kicad7_diffs
+        path: test/diffs/
+
+  kicad8-test:
+    runs-on: ubuntu-latest
+    container:
+      image: kicad/kicad:8.0.5
+      options: --user root
+
+    steps:
+    - name: clone
+      uses: actions/checkout@v3
+
+    - name: setup_kiff
+      run: |
+        apt update -y
+        apt install -y poppler-utils
+        unzip test.zip
+        cd test
+
+    - name: run_kiff
+      working-directory: ./test
+      run: |
+          ls -la
+          python3 ../kiff.py -c "HEAD~1" fmc_lpc_template.kicad_pcb
+
+    - name: archive_results
+      uses: actions/upload-artifact@v4
+      with:
+        name: kicad8_diffs
         path: test/diffs/
