@@ -36,7 +36,7 @@ jobs:
   kicad6-test:
     runs-on: ubuntu-latest
     container:
-      image: docker pull ghcr.io/inti-cmnb/kicad6_auto:dev_1.8.1-77724ad_k6.0.11_d12.1
+      image: ghcr.io/inti-cmnb/kicad6_auto:dev_1.8.1-77724ad_k6.0.11_d12.1
       options: --user root
 
     steps:
