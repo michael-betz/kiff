@@ -9,7 +9,9 @@ on:
 jobs:
   kicad-test-job:
     runs-on: ubuntu-latest
-    container: kicad/kicad:7.0.10
+    container: 
+      image: kicad/kicad:7.0.10
+      options: --user root
 
     steps:
     - name: clone
