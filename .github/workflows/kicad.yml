@@ -23,3 +23,15 @@ jobs:
           whoami
           ls -la
           id -u
+
+    - name: setup
+      run: |
+        apt update
+        apt install poppler-utils
+        unzip test.zip
+        cd test
+
+    - name: investigate2
+      run: |
+          ls -la
+          id -u
