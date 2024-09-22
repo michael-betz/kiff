@@ -8,30 +8,30 @@ on:
 
 jobs:
   # fmc_lpc_template.kicad_pcb: failed to load with pcbnew, aborting :(
-  # kicad5-test:
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: ghcr.io/inti-cmnb/kicad5_auto:dev_1.8.1-77724ad_k5.1.9_d11.6
-  #     options: --user root
+  kicad5-test:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/inti-cmnb/kicad5_auto:dev_1.8.1-77724ad_k5.1.9_d11.6
+      options: --user root
 
-  #   steps:
-  #   - name: clone
-  #     uses: actions/checkout@v3
+    steps:
+    - name: clone
+      uses: actions/checkout@v3
 
-  #   - name: setup_kiff
-  #     run: |
-  #       unzip test.zip
+    - name: setup_kiff
+      run: |
+        unzip test.zip
 
-  #   - name: run_kiff
-  #     working-directory: test/
-  #     run: |
-  #         python3 ../kiff.py -c "HEAD~1" fmc_lpc_template.kicad_pcb
+    - name: run_kiff
+      working-directory: test/
+      run: |
+          python3 ../kiff.py -c "HEAD~1" test5.kicad_pcb
 
-  #   - name: archive_results
-  #     uses: actions/upload-artifact@v4
-  #     with:
-  #       name: kicad5_diffs
-  #       path: test/diffs/
+    - name: archive_results
+      uses: actions/upload-artifact@v4
+      with:
+        name: kicad5_diffs
+        path: test/diffs/
 
   kicad6-test:
     runs-on: ubuntu-latest
@@ -50,7 +50,7 @@ jobs:
     - name: run_kiff
       working-directory: test/
       run: |
-          python3 ../kiff.py -c "HEAD~1" fmc_lpc_template.kicad_pcb
+          python3 ../kiff.py -c "HEAD~1" test5.kicad_pcb
 
     - name: archive_results
       uses: actions/upload-artifact@v4
@@ -77,7 +77,7 @@ jobs:
     - name: run_kiff
       working-directory: test/
       run: |
-          python3 ../kiff.py -c "HEAD~1" fmc_lpc_template.kicad_pcb
+          python3 ../kiff.py -c "HEAD~1" test5.kicad_pcb
 
     - name: archive_results
       uses: actions/upload-artifact@v4
@@ -104,7 +104,7 @@ jobs:
     - name: run_kiff
       working-directory: test/
       run: |
-          python3 ../kiff.py -c "HEAD~1" fmc_lpc_template.kicad_pcb
+          python3 ../kiff.py -c "HEAD~1" test5.kicad_pcb
 
     - name: archive_results
       uses: actions/upload-artifact@v4
