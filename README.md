@@ -22,7 +22,7 @@ Note that this may look inverted for features on copper fills.
 # Supported Kicad versions
 There are currently CI tests in place for versions 5.1.9, 6.0.11, 7.0.10, and 8.0.5. If the below badge is green then they all succeeded.
 
-![CI status](https://github.com/michael-betz/kiff/actions/workflows/kicad.yml/badge.svg)
+[![CI status](https://github.com/michael-betz/kiff/actions/workflows/kicad.yml/badge.svg)](https://github.com/michael-betz/kiff/actions/workflows/kicad.yml)
 
 Earlier versions were also tested to work with Python 2 and 3. To enable scripting with Python 3, Kicad needs to be compiled with `-DKICAD_SCRIPTING_PYTHON3=TRUE`.
 
