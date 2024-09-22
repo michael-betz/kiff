@@ -20,7 +20,7 @@ Note that this may look inverted for features on copper fills.
   * `kiff.py` needs to be in your python path
 
 # Supported Kicad versions
-There are currently CI tests in place for versions 5.1.9, 6.0.11, 7.0.10, and 8.0.5. If the below badge is green then they all succeeded.
+There are currently CI tests in place for versions 5.1.9, 6.0.11, 7.0.10, and 8.0.5. If the below badge is green, they've all succeeded.
 
 [![CI status](https://github.com/michael-betz/kiff/actions/workflows/kicad.yml/badge.svg)](https://github.com/michael-betz/kiff/actions/workflows/kicad.yml)
 
