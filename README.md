@@ -17,12 +17,14 @@ Note that this may look inverted for features on copper fills.
 # Requires
   * `poppler-utils` to convert the Kicad .pdf plots to bitmaps
   * `python-pil` and `python-numpy` for image manipulations
-  * `kiff.py` needs to be in your path
+  * `kiff.py` needs to be in your python path
 
-Tested to work with Python 2 and 3. To enable scripting with Python 3, Kicad needs to be compiled with `-DKICAD_SCRIPTING_PYTHON3=TRUE`.
+# Supported Kicad versions
+There are currently CI tests in place for versions 5.1.9, 6.0.11, 7.0.10, and 8.0.5. If the below badge is green, they've all succeeded.
 
-### Kicad 6
-Tested on 2022-02-15 to work out of the box with Kicad 6.0.2.
+[![CI status](https://github.com/michael-betz/kiff/actions/workflows/kicad.yml/badge.svg)](https://github.com/michael-betz/kiff/actions/workflows/kicad.yml)
+
+Earlier versions were also tested to work with Python 2 and 3. To enable scripting with Python 3, Kicad needs to be compiled with `-DKICAD_SCRIPTING_PYTHON3=TRUE`.
 
 # Usage example
 Compare the current version against the one from 3 commits ago:

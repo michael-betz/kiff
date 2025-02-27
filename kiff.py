@@ -134,7 +134,9 @@ def main():
     print('layers: ' + ' '.join(layers))
 
     # Check for local (un-commited) changes
-    do_stash = call(['git', 'diff-index', '--quiet', 'HEAD', '--']) > 0
+    # https://stackoverflow.com/questions/5143795/how-can-i-check-in-a-bash-script-if-my-local-git-repository-has-changes
+    do_stash = check_output(['git', 'status', '--porcelain', '--untracked-files=no']) != b''
+
     if not do_stash and args.commit == 'HEAD':
         print('No local changes, nothing to compare. Try -c <commit-id>')
         return -1
