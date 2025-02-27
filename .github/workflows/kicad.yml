@@ -20,6 +20,8 @@ jobs:
 
     - name: setup_kiff
       run: |
+        apt update -y
+        apt install -y unzip
         unzip test.zip
 
     - name: run_kiff
@@ -45,6 +47,8 @@ jobs:
 
     - name: setup_kiff
       run: |
+        apt update -y
+        apt install -y unzip
         unzip test.zip
 
     - name: run_kiff
