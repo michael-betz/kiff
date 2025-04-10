@@ -118,7 +118,6 @@ jobs:
       working-directory: test/
       run: |
           export PATH=$PATH:$HOME/.local/bin
-          export PYTHONPATH=/usr/lib/python3/dist-packages
           kiff -c "HEAD~1" test5.kicad_pcb
 
     - name: archive_results
@@ -149,7 +148,6 @@ jobs:
       working-directory: test/
       run: |
           export PATH=$PATH:$HOME/.local/bin
-          export PYTHONPATH=/usr/lib/python3/dist-packages
           kiff -c "HEAD~1" test5.kicad_pcb
 
     - name: archive_results
