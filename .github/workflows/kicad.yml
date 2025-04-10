@@ -2,9 +2,9 @@ name: Kicad CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "kicad-cli" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "kicad-cli" ]
 
 jobs:
   # fmc_lpc_template.kicad_pcb: failed to load with pcbnew, aborting :(
