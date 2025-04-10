@@ -137,7 +137,7 @@ jobs:
     - name: run_kiff
       working-directory: test/
       run: |
-          export PATH=$PATH:/root/.local/bin
+          export PATH=$PATH:$HOME/.local/bin
           kiff -c "HEAD~1" test5.kicad_pcb
 
     - name: archive_results
