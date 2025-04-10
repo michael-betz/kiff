@@ -1,23 +1,23 @@
 #!/usr/bin/env python
-'''
+"""
 Plot a selection of layers of a kicad pcb as .pdf files
 
 As of Kicad 8, almost the whole functionality of this script is integrated in
 kicad-cli.
-'''
+"""
 import sys
 import pcbnew
 import os
 
 
-def plot_layers(f_name, plot_dir, layers=['F.Cu', 'B.Cu'], zone_refill=True):
-    '''
+def plot_layers(f_name, plot_dir, layers=["F.Cu", "B.Cu"], zone_refill=True):
+    """
     f_name: the .kicad_pcb file to plot
     plot_dir: output directory for the .pdf files
     layers: list of layer names to plot
     zone_refill: if True, re-calculate copper fills before plotting
     returns: dict with coordinates of bounding box containing the PCB [inches]
-    '''
+    """
     try:
         version = int(pcbnew.Version().split(".")[0])
     except AttributeError:
@@ -34,16 +34,16 @@ def plot_layers(f_name, plot_dir, layers=['F.Cu', 'B.Cu'], zone_refill=True):
     # after this point, chances of failure are low
 
     if zone_refill:
-        print('filling zones ...')
+        print("filling zones ...")
         zf = pcbnew.ZONE_FILLER(board)
         zf.Fill(board.Zones())
 
     boardbox = board.ComputeBoundingBox()
     bounds = {
-        'x': boardbox.GetX() / 1e6 / 25.4,
-        'y': boardbox.GetY() / 1e6 / 25.4,
-        'W': boardbox.GetWidth() / 1e6 / 25.4,
-        'H': boardbox.GetHeight() / 1e6 / 25.4,
+        "x": boardbox.GetX() / 1e6 / 25.4,
+        "y": boardbox.GetY() / 1e6 / 25.4,
+        "W": boardbox.GetWidth() / 1e6 / 25.4,
+        "H": boardbox.GetHeight() / 1e6 / 25.4,
     }
     # print('bounds [inch]:', bounds)
 
