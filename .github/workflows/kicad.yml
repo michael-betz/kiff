@@ -2,12 +2,11 @@ name: Kicad CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "kicad-cli" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "kicad-cli" ]
 
 jobs:
-  # fmc_lpc_template.kicad_pcb: failed to load with pcbnew, aborting :(
   kicad5-test:
     runs-on: ubuntu-latest
     container:
@@ -21,13 +20,16 @@ jobs:
     - name: setup_kiff
       run: |
         apt update -y
-        apt install -y unzip
+        apt install -y unzip poppler-utils pipx
+        pipx install .
         unzip test.zip
 
     - name: run_kiff
       working-directory: test/
       run: |
-          python3 ../kiff.py -c "HEAD~1" test5.kicad_pcb
+          export PATH=$PATH:$HOME/.local/bin
+          export PYTHONPATH=/usr/lib/python3/dist-packages
+          kiff -c "HEAD~1" test5.kicad_pcb
 
     - name: archive_results
       uses: actions/upload-artifact@v4
@@ -48,13 +50,16 @@ jobs:
     - name: setup_kiff
       run: |
         apt update -y
-        apt install -y unzip
+        apt install -y unzip poppler-utils pipx
+        pipx install .
         unzip test.zip
 
     - name: run_kiff
       working-directory: test/
       run: |
-          python3 ../kiff.py -c "HEAD~1" test5.kicad_pcb
+          export PATH=$PATH:$HOME/.local/bin
+          export PYTHONPATH=/usr/lib/python3/dist-packages
+          kiff -c "HEAD~1" test5.kicad_pcb
 
     - name: archive_results
       uses: actions/upload-artifact@v4
@@ -75,13 +80,16 @@ jobs:
     - name: setup_kiff
       run: |
         apt update -y
-        apt install -y poppler-utils
+        apt install -y poppler-utils pipx
+        pipx install .
         unzip test.zip
 
     - name: run_kiff
       working-directory: test/
       run: |
-          python3 ../kiff.py -c "HEAD~1" test5.kicad_pcb
+          export PATH=$PATH:$HOME/.local/bin
+          export PYTHONPATH=/usr/lib/python3/dist-packages
+          kiff -c "HEAD~1" test5.kicad_pcb
 
     - name: archive_results
       uses: actions/upload-artifact@v4
@@ -102,16 +110,48 @@ jobs:
     - name: setup_kiff
       run: |
         apt update -y
-        apt install -y poppler-utils
+        apt install -y poppler-utils pipx
+        pipx install .
         unzip test.zip
 
     - name: run_kiff
       working-directory: test/
       run: |
-          python3 ../kiff.py -c "HEAD~1" test5.kicad_pcb
+          export PATH=$PATH:$HOME/.local/bin
+          kiff -c "HEAD~1" test5.kicad_pcb
 
     - name: archive_results
       uses: actions/upload-artifact@v4
       with:
         name: kicad8_diffs
+        path: test/diffs/
+
+
+  kicad9-test:
+    runs-on: ubuntu-latest
+    container:
+      image: kicad/kicad:9.0
+      options: --user root
+
+    steps:
+    - name: clone
+      uses: actions/checkout@v3
+
+    - name: setup_kiff
+      run: |
+        apt update -y
+        apt install -y poppler-utils pipx
+        pipx install .
+        unzip test.zip
+
+    - name: run_kiff
+      working-directory: test/
+      run: |
+          export PATH=$PATH:$HOME/.local/bin
+          kiff -c "HEAD~1" test5.kicad_pcb
+
+    - name: archive_results
+      uses: actions/upload-artifact@v4
+      with:
+        name: kicad9_diffs
         path: test/diffs/
