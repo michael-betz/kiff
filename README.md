@@ -33,7 +33,7 @@ kiff test5.kicad_pcb -c HEAD~1
 ```
 
 # Supported Kicad versions
-There are currently CI tests in place for versions 5.1.9, 6.0.11, 7.0.10, and 8.0.5. If the below badge is green, they've all succeeded.
+There are currently CI tests in place for versions 5.1.9, 6.0.11, 7.0.10, 8.0.5 and 9.0.0. If the below badge is green, they've all succeeded.
 
 [![CI status](https://github.com/michael-betz/kiff/actions/workflows/kicad.yml/badge.svg)](https://github.com/michael-betz/kiff/actions/workflows/kicad.yml)
 
