@@ -32,6 +32,33 @@ cd test/
 kiff test5.kicad_pcb -c HEAD~1
 ```
 
+In the above installation steps, `pipx` takes care of creating and managing an isolated python environment transparently.
+If that's not what is desired, for example when modifying kiff, here are the manual installation steps.
+
+```bash
+# Install dependencies
+sudo apt install poppler-utils python3-virtualenv python3-pip
+
+# Clone the repo
+git clone https://github.com/michael-betz/kiff.git
+
+# Create a virtual environment
+python3 -m virtualenv kiff_env
+
+# ... and activate it
+source kiff_env/bin/activate
+
+# Now install kiff from the previously cloned files
+pip install -e kiff/
+
+kiff -h
+
+	usage: kiff [-h] [-c COMMIT] [-l LAYERS] [-ll LAYER_LIST] [-r RESOLUTION] [-k] [--cli] kicad_pcb
+
+	Kiff, the Kicad Diff!
+	...
+```
+
 # Supported KiCad versions
 There are currently CI tests in place for versions 5.1.9, 6.0.11, 7.0.10, 8.0.5 and 9.0.0. If the below badge is green, they've all succeeded.
 
