@@ -1,10 +1,6 @@
 name: Kicad CI
 
-on:
-  push:
-    branches: [ "main", "kicad-cli" ]
-  pull_request:
-    branches: [ "main", "kicad-cli" ]
+on: [push, pull_request]
 
 jobs:
   kicad5-test:
