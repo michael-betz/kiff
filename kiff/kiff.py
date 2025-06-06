@@ -102,14 +102,18 @@ def main():
         "-c", "--commit", default="HEAD", help="git commit-id to compare current version against. Default: HEAD"
     )
     parser.add_argument(
-        "-l", "--layers", default=0, type=int, help="Number of inner layers (InX.Cu) to plot. Default: 0"
+        "-l",
+        "--layers",
+        default=0,
+        type=int,
+        help="Number of inner layers (InX.Cu) to plot. Will be added to LAYER_LIST. Default: 0",
     )
     parser.add_argument(
         "-ll",
         "--layer-list",
-        default="F.Cu B.Cu F.Silkscreen B.Silkscreen",
+        default="F.Cu,B.Cu",
         type=str,
-        help="Space separated list of layer names to plot. Default: F.Cu B.Cu F.Silkscreen B.Silkscreen",
+        help="Comma separated list of layer names to plot. Default: F.Cu,B.Cu",
     )
     parser.add_argument("-r", "--resolution", default=400, type=int, help="Plotting resolution in [dpi]. Default: 400")
     parser.add_argument("-k", "--keep", action="store_true", help="Don`t delete temporary .pdf layer plots")
@@ -127,7 +131,7 @@ def main():
             print("WARNING: couldn't find pcbnew legacy python API, using kicad-cli for pdf-exports")
             from kiff.plot_layers_cli import plot_layers
 
-    layers = args.layer_list.split()
+    layers = args.layer_list.split(",")
     layers += ["In{}.Cu".format(i + 1) for i in range(args.layers)]
     print("layers: " + " ".join(layers))
 
