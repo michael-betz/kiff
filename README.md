@@ -1,4 +1,4 @@
-# Kiff, the Kicad diff
+# Kiff, the KiCad diff
 Graphically compare layout changes between two git versions of a PCB.
 
 If `-c` is not given, compares the local working copy against the latest
@@ -19,7 +19,7 @@ At least python version 3.11 (to be verified) is required.
 
 ```bash
 # Install dependencies
-# poppler-utils is used to convert the Kicad .pdf plots to bitmaps
+# poppler-utils is used to convert the KiCad .pdf plots to bitmaps
 sudo apt install poppler-utils pipx
 
 # Install kiff
@@ -32,12 +32,12 @@ cd test/
 kiff test5.kicad_pcb -c HEAD~1
 ```
 
-# Supported Kicad versions
+# Supported KiCad versions
 There are currently CI tests in place for versions 5.1.9, 6.0.11, 7.0.10, 8.0.5 and 9.0.0. If the below badge is green, they've all succeeded.
 
 [![CI status](https://github.com/michael-betz/kiff/actions/workflows/kicad.yml/badge.svg)](https://github.com/michael-betz/kiff/actions/workflows/kicad.yml)
 
-By default, the legacy python API is used to generate the .pdfs. The API needs to be installed in your python path (`import pcbnew` must work). This API will be no more available in Kicad 9.
+By default, the legacy python API is used to generate the .pdfs. The API needs to be installed in your python path (`import pcbnew` must work). This API will be no more available in KiCad 9.
 
 If the legacy API fails, kiff falls back on the `kicad-cli` command-line tool, which can also plot the .pdfs. This tool has been introduced in version 7.
 
@@ -75,5 +75,5 @@ This will generate `diffs/<layer_name>.png` for each layer.
 
 ![diff example](example.png)
 
-It works by using `plot_layers.py` to make Kicad plot each layer of each version as `.pdf` into 2 temporary directories.
+It works by using `plot_layers.py` to make KiCad plot each layer of each version as `.pdf` into 2 temporary directories.
 Then `pdftoppm` is called to crop the pdfs and convert them to bitmap. Bitmap data is read by `PIL` over stdin and the diff image is created in python using numpy arrays.
