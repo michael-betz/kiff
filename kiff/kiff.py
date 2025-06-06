@@ -107,9 +107,9 @@ def main():
     parser.add_argument(
         "-ll",
         "--layer-list",
-        default="F.Cu B.Cu F.SilkS B.SilkS",
+        default="F.Cu B.Cu F.Silkscreen B.Silkscreen",
         type=str,
-        help="Space separated list of layer names to plot. Default: F.Cu B.Cu F.SilkS B.SilkS",
+        help="Space separated list of layer names to plot. Default: F.Cu B.Cu F.Silkscreen B.Silkscreen",
     )
     parser.add_argument("-r", "--resolution", default=400, type=int, help="Plotting resolution in [dpi]. Default: 400")
     parser.add_argument("-k", "--keep", action="store_true", help="Don`t delete temporary .pdf layer plots")
