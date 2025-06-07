@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 from pathlib import Path
-from subprocess import CalledProcessError, check_output
+from subprocess import check_output
 
 # global, because we only want to search once for the right cmd
 cmd = None
@@ -32,6 +32,7 @@ def plot_layers(f_name, plot_dir, layers=["F.Cu", "B.Cu"], zone_refill=True):
     use kicad-cli to create the .pdf plots.
     Supports native mode and flatpak mode.
     Not so sure what happens on Windows.
+    Returns list of .pdf file-names written
     """
     if cmd is None:
         find_cmd()
@@ -39,6 +40,8 @@ def plot_layers(f_name, plot_dir, layers=["F.Cu", "B.Cu"], zone_refill=True):
     f_name = Path(f_name)
     plot_dir = Path(plot_dir)
     plot_dir.mkdir(exist_ok=True)
+
+    # out_names = []
 
     if int(version.split(".")[0]) >= 9:
         # We can plot all the layers in one go with --mode-separate
@@ -58,7 +61,6 @@ def plot_layers(f_name, plot_dir, layers=["F.Cu", "B.Cu"], zone_refill=True):
         cmd_full = cmd + kicad_cli_args
         print("$ " + " ".join(cmd_full))
         check_output(cmd_full)
-
     else:
         # We have to send a plot command for each layer separately
         for layer in layers:

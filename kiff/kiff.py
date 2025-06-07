@@ -23,9 +23,9 @@ from PIL import Image
 from numpy import array, zeros, uint8, sum
 from subprocess import check_output
 from io import BytesIO
-from os.path import splitext, join
 from os import mkdir
 from shutil import rmtree
+from glob import glob
 
 
 def img_diff(i1, i2, doInvert=True):
@@ -102,14 +102,18 @@ def main():
         "-c", "--commit", default="HEAD", help="git commit-id to compare current version against. Default: HEAD"
     )
     parser.add_argument(
-        "-l", "--layers", default=0, type=int, help="Number of inner layers (InX.Cu) to plot. Default: 0"
+        "-l",
+        "--layers",
+        default=0,
+        type=int,
+        help="Number of inner layers (InX.Cu) to plot. Will be added to LAYER_LIST. Default: 0",
     )
     parser.add_argument(
         "-ll",
         "--layer-list",
-        default="F.Cu B.Cu F.SilkS B.SilkS",
+        default="F.Cu,B.Cu,F.SilkS,B.SilkS",
         type=str,
-        help="Space separated list of layer names to plot. Default: F.Cu B.Cu F.SilkS B.SilkS",
+        help="Comma separated list of untranslated layer names to plot. Default: F.Cu,B.Cu,F.SilkS,B.SilkS",
     )
     parser.add_argument("-r", "--resolution", default=400, type=int, help="Plotting resolution in [dpi]. Default: 400")
     parser.add_argument("-k", "--keep", action="store_true", help="Don`t delete temporary .pdf layer plots")
@@ -127,7 +131,7 @@ def main():
             print("WARNING: couldn't find pcbnew legacy python API, using kicad-cli for pdf-exports")
             from kiff.plot_layers_cli import plot_layers
 
-    layers = args.layer_list.split()
+    layers = args.layer_list.split(",")
     layers += ["In{}.Cu".format(i + 1) for i in range(args.layers)]
     print("layers: " + " ".join(layers))
 
@@ -141,16 +145,16 @@ def main():
 
     # output directory name is derived from `git describe`
     try:
-        git1_name = desc()
+        git_a_name = desc()
     except Exception:
         # this will happen if user isn't in a git repo
         print("No git description, can't continue")
         exit(1)
 
     # Do a .pdf plot of the current version
-    dir1 = "plot_" + git1_name
-    print("> " + dir1)
-    bounds1 = plot_layers(args.kicad_pcb, dir1, layers)
+    dir_a = "plot_" + git_a_name + "/"
+    print("> " + dir_a)
+    bounds1 = plot_layers(args.kicad_pcb, dir_a, layers)
 
     # Stash local changes if needed
     if do_stash:
@@ -161,9 +165,9 @@ def main():
         co(["git", "checkout", args.commit])
 
     # ... and do a .pdf plot of it
-    dir2 = "plot_" + desc()
-    print("> " + dir2)
-    bounds2 = plot_layers(args.kicad_pcb, dir2, layers)
+    dir_b = "plot_" + desc() + "/"
+    print("> " + dir_b)
+    plot_layers(args.kicad_pcb, dir_b, layers)
 
     # Switch back to current version
     if args.commit != "HEAD":
@@ -179,16 +183,15 @@ def main():
     except OSError:
         print("diffs directory already exists")
 
-    # Create a .png diff for each layer
+    # Create a .png diff for each plotted .pdf
     diff_cntr = 0
-    for ll in layers:
-        pdf_name = splitext(args.kicad_pcb)[0]
-        pdf_name += "-" + ll.replace(".", "_") + ".pdf"
-        out_file = "diffs/" + ll + ".png"
+    for pdf_file_a in glob(dir_a + "*.pdf"):
+        pdf_file_b = pdf_file_a.replace(dir_a, dir_b)
+        out_file = pdf_file_a.replace(dir_a, "diffs/").replace(".pdf", ".png")
 
-        i1 = load_pdf(join(dir1, pdf_name), r=args.resolution, bounds=bounds1)
-        i2 = load_pdf(join(dir2, pdf_name), r=args.resolution, bounds=bounds1)
-        i_out, added, removed = img_diff(i1, i2)
+        img_a = load_pdf(pdf_file_a, r=args.resolution, bounds=bounds1)
+        img_b = load_pdf(pdf_file_b, r=args.resolution, bounds=bounds1)
+        i_out, added, removed = img_diff(img_a, img_b)
         i_out.save(out_file)
 
         print("> {:18s} (+{:.6f}, -{:.6f})".format(out_file, added, removed))
@@ -199,8 +202,8 @@ def main():
 
     if not args.keep:
         print("Removing temporary directories")
-        rmtree(dir1)
-        rmtree(dir2)
+        rmtree(dir_a)
+        rmtree(dir_b)
 
 
 if __name__ == "__main__":

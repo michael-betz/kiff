@@ -1,10 +1,6 @@
 name: Kicad CI
 
-on:
-  push:
-    branches: [ "main", "kicad-cli" ]
-  pull_request:
-    branches: [ "main", "kicad-cli" ]
+on: [push, pull_request]
 
 jobs:
   kicad5-test:
@@ -29,7 +25,7 @@ jobs:
       run: |
           export PATH=$PATH:$HOME/.local/bin
           export PYTHONPATH=/usr/lib/python3/dist-packages
-          kiff -c "HEAD~1" test5.kicad_pcb
+          kiff -c "HEAD~1" --layer-list F.Cu,B.Cu,F.SilkS,B.SilkS test5.kicad_pcb
 
     - name: archive_results
       uses: actions/upload-artifact@v4

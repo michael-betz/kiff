@@ -12,3 +12,12 @@ kiff = "kiff.kiff:main"
 
 [tool.black]
 line-length = 120
+
+[tool.pyright]
+reportOptionalMemberAccess = "warning"
+reportUnusedImport = "warning"
+reportUnusedClass = "warning"
+reportUnusedFunction = "warning"
+reportUnusedVariable = "warning"
+reportDuplicateImport = "error"
+reportWildcardImportFromLibrary = "error"
