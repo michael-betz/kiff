@@ -133,7 +133,7 @@ def main():
 
     layers = args.layer_list.split(",")
     layers += ["In{}.Cu".format(i + 1) for i in range(args.layers)]
-    print("layers: " + " ".join(layers))
+    print(f"plotting {len(layers)} layers: {layers}")
 
     # Check for local (un-commited) changes
     # https://stackoverflow.com/questions/5143795/how-can-i-check-in-a-bash-script-if-my-local-git-repository-has-changes
