@@ -123,7 +123,7 @@ def main():
     args = parser.parse_args()
 
     if args.cli:
-        from plot_layers_cli import plot_layers
+        from kiff.plot_layers_cli import plot_layers
     else:
         try:
             from kiff.plot_layers import plot_layers
