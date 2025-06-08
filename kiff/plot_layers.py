@@ -62,22 +62,39 @@ def plot_layers(f_name, plot_dir, layers=["F.Cu", "B.Cu"], zone_refill=True):
     else:
         popt.SetDrillMarksType(pcbnew.DRILL_MARKS_FULL_DRILL_SHAPE)
 
+    plotted_one = False
     for layer in layers:
         pctl.OpenPlotfile(layer, pcbnew.PLOT_FORMAT_PDF, layer)
+        try:
 
-        if version <= 6:
-            pctl.SetLayer(board.GetLayerID(layer))
-            pctl.PlotLayer()
-        else:
-            # Workaround to get the functionality of SetExcludeEdgeLayer(False)
-            # https://gitlab.com/kicad/code/kicad/-/issues/13841
-            seq = pcbnew.LSEQ()
-            seq.push_back(pcbnew.Edge_Cuts)
-            seq.push_back(board.GetLayerID(layer))
-            pctl.PlotLayers(seq)
+            if version <= 6:
+                layer_id = board.GetLayerID(layer)
+                if layer_id < 0:
+                    print(f"layer {layer} not found - skipping")
+                else:
+                    pctl.SetLayer(layer_id)
+                    pctl.PlotLayer()
+                    plotted_one = True
+            else:
+                # Workaround to get the functionality of SetExcludeEdgeLayer(False)
+                # https://gitlab.com/kicad/code/kicad/-/issues/13841
+                seq = pcbnew.LSEQ()
+                seq.push_back(pcbnew.Edge_Cuts)
+                layer_id = board.GetLayerID(layer)
+                if  layer_id < 0:
+                    print(f"layer {layer} not found - skipping")
+                else:
+                    seq.push_back(board.GetLayerID(layer))
+                    pctl.PlotLayers(seq)
+                    plotted_one = True
 
+        except Exception:
+            print(f"something went wrong plotting {layer}")
         pctl.ClosePlot()
 
+    if not plotted_one:
+        print("nothing plotted; aborting")
+        raise Exception
     return bounds
 
 
