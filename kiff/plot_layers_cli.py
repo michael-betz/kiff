@@ -33,6 +33,7 @@ def plot_layers(f_name, plot_dir, layers=["F.Cu", "B.Cu"], zone_refill=True):
     Supports native mode and flatpak mode.
     Not so sure what happens on Windows.
     Returns list of .pdf file-names written
+    raises subprocess.CalledProcessError on error
     """
     if cmd is None:
         find_cmd()
