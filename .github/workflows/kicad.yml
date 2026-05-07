@@ -151,3 +151,32 @@ jobs:
       with:
         name: kicad9_diffs
         path: test/diffs/
+
+  kicad10-test:
+    runs-on: ubuntu-latest
+    container:
+      image: kicad/kicad:10.0
+      options: --user root
+
+    steps:
+    - name: clone
+      uses: actions/checkout@v3
+
+    - name: setup_kiff
+      run: |
+        apt update -y
+        apt install -y poppler-utils pipx
+        pipx install .
+        unzip test.zip
+
+    - name: run_kiff
+      working-directory: test/
+      run: |
+          export PATH=$PATH:$HOME/.local/bin
+          kiff -c "HEAD~1" test5.kicad_pcb
+
+    - name: archive_results
+      uses: actions/upload-artifact@v4
+      with:
+        name: kicad10_diffs
+        path: test/diffs/
