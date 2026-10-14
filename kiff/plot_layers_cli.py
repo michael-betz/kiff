@@ -24,7 +24,6 @@ def find_cmd():
 
     version = version_str.strip().decode()
     print("found kicad-cli version:", version)
-    print("WARNING: automatic zone-refills are not supported (yet)")
 
 
 def plot_layers(f_name, plot_dir, layers=["F.Cu", "B.Cu"], zone_refill=True):
@@ -56,10 +55,14 @@ def plot_layers(f_name, plot_dir, layers=["F.Cu", "B.Cu"], zone_refill=True):
             "--mode-separate",
             "-o",
             str(plot_dir),
-            str(f_name),
         ]
 
-        cmd_full = cmd + kicad_cli_args
+        if int(version.split(".")[0]) >= 10:
+            kicad_cli_args.append("--check-zones")
+        else:
+            print("WARNING: automatic zone-refills are not supported in KiCad 9")
+
+        cmd_full = cmd + kicad_cli_args + [str(f_name)]
         print("$ " + " ".join(cmd_full))
         check_output(cmd_full)
     else:
